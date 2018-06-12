@@ -217,6 +217,15 @@ class DNACell(tf.nn.rnn_cell.RNNCell):
                 (self.hparams.ngf * 2, False),
                 (self.hparams.ngf, False),
             ]
+        elif scale_size == 100:
+            self.encoder_layer_specs = [
+                (self.hparams.ngf, True),
+                (self.hparams.ngf*2, True),
+            ]
+            self.decoder_layer_specs = [
+                (self.hparams.ngf * 2, True),
+                (self.hparams.ngf, False),
+            ]
         elif scale_size == 64:
             self.encoder_layer_specs = [
                 (self.hparams.ngf, True),
@@ -704,7 +713,7 @@ class SAVPVideoPredictionModel(VideoPredictionModel):
             d_downsample_layer='conv_pool2d',
             d_conditional=True,
             d_use_gt_inputs=True,
-            ngf=32,
+            ngf=8,
             downsample_layer='conv_pool2d',
             upsample_layer='upsample_conv2d',
             transformation='cdna',

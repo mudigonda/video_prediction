@@ -63,6 +63,8 @@ class ServoPolicy:
             action_std = np.array([xy_std, xy_std, grasp_std, lift_std])
         elif action_dim == 3:
             action_std = np.array([xy_std, xy_std, lift_std])
+        elif action_dim == 2:
+            action_std = np.array([xy_std, xy_std])	
         else:
             raise NotImplementedError
         effective_horizon = int(np.ceil(self.hparams.plan_horizon / self.hparams.repeat))
@@ -99,20 +101,20 @@ class ServoPolicy:
 
     def noisy_evaluation(self, obs, thetas, fetches=None):
         context_images = obs['context_images']
-        context_state = obs['context_state']
+        #context_state = obs['context_state']
         goal_image = obs['goal_image']
         image_shape = tuple(self.model.inputs['images'].shape.as_list()[-3:])
-        state_dim = self.model.inputs['states'].shape[-1].value
+        #state_dim = self.model.inputs['states'].shape[-1].value
         if not isinstance(self.model, models.GroundTruthVideoPredictionModel):
             assert context_images.shape == ((self.model.hparams.context_frames,) + image_shape)
-        assert context_state.shape == (state_dim,)
+        #assert context_state.shape == (state_dim,)
         assert goal_image.shape == image_shape
 
         actions = self.theta_to_action(thetas)
 
         feed_dict = {
             self.model.inputs['images']: np.repeat(context_images[None], self.hparams.cem_batch_size, axis=0),
-            self.model.inputs['states']: np.repeat(context_state[None, None], self.hparams.cem_batch_size, axis=0),
+            #self.model.inputs['states']: np.repeat(context_state[None, None], self.hparams.cem_batch_size, axis=0),
             self.goal_image_ph: np.repeat(goal_image[None], self.hparams.cem_batch_size, axis=0),
             self.model.inputs['actions']: actions,
         }

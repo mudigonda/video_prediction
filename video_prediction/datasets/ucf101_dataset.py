@@ -116,7 +116,6 @@ def partition_data(input_dir, train_test_list_dir):
 
 def read_video(fname):
     if not os.path.isfile(fname):
-        raise FileNotFoundError
     vidcap = cv2.VideoCapture(fname)
     frames, (success, image) = [], vidcap.read()
     while success:
